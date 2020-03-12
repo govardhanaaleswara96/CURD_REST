@@ -50,7 +50,7 @@
             <a class="nav-link" href="index.html"> Products</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="create.html">Add Products</a>
+            <a class="nav-link" href="addProduct.html">Add Products</a>
           </li>
         </ul>
       </div>
@@ -77,65 +77,55 @@
     </div>
     <script>
       "use strict";
-      $(document).ready(function() {
-        let userList = () => {
-          var arr = $.ajax({
-            url: "/products/",
-            type: "GET",
-            dataType: "json",
-            async: false,
-            success: data => {
-              console.log(data);
-            }
-          }).responseText;
-          //  console.log(arr);
-          let userData = JSON.parse(arr);
-          let tbody = document.querySelector("#tbody");
-          const rows = userData
-            .map(
-              (product, i) => `
-                <tr>
-                <td>${i + 1}</td>
-                <td>${product.name}</td>
-                <td>${product.price}</td>
-                <td>
-                 <a class="btn btn-info" href="edit.html?id=${
-                   product._id
-                 }" >Edit</a>
-                </td>
-                <td>
-                <button id="${
-                  product._id
-                }" class="deleteButton btn btn-danger" value="">Delete</button>
-                </td>
-             </tr>
-                `
-            )
-            .join("");
-          tbody.innerHTML = rows;
-        };
-        userList();
-        //delete user
-        $(".deleteButton").on("click", function() {
-          //   let id = this.id;
-          let id = $(this).attr("id");
-          var el = this;
-
-          console.log(id);
-          let deleteUser = () => {
-            $.ajax({
-              url: `products/${id}/delete`,
-              type: "DELETE"
-            }).done(response => {
-              console.log(response);
-            });
-            alert("Data Deleted Successfully !");
-            // userList();
-            window.location = "index.html";
-          };
-          deleteUser();
+      let getUser = () => {
+        const arr = $.ajax({
+          url: "/products/",
+          type: "GET",
+          dataType: "json",
+          async: false,
+          success: data => {
+            //console.log(data);
+          }
+        }).responseText;
+        var json = JSON.parse(arr);
+        // console.log(json);
+        const tbody = document.querySelector("#tbody");
+        const rows = json
+          .map(
+            (product, i) => `<tr>
+                      <td>${i + 1}</td>
+                      <td>${product.name}</td>
+                      <td>${product.price}</td>
+                    <td>
+                        <a class="btn btn-info" href="editProduct.html?id=${
+                          product._id
+                        }" >Edit</a>
+                    </td>
+                    <td>
+                        <button id="${
+                          product._id
+                        }" class="deleteButton btn btn-danger" value="">Delete</button>
+                    </td>
+                    </tr>`
+          )
+          .join("");
+        tbody.innerHTML = rows;
+      };
+      getUser();
+      // delete data
+      const deleteUser = function() {
+        let id = $(this).attr("id");
+        $.ajax({
+          url: `/products/${id}`,
+          type: "DELETE",
+          success: response => {
+            console.log(response);
+          }
         });
-      });
+        alert(`${id} was Deleted`);
+        window.location = "index.html";
+      };
+      $(".deleteButton").on("click", deleteUser);
     </script>
     <!-- JQuery -->
     <script

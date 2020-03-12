@@ -1,49 +1,46 @@
 const Product = require("../models/product.model");
-
-//Simple version, without validation or sanitation
-exports.test = function(req, res) {
-  res.send("Greetings from the Test controller!");
+exports.test = (req, res) => {
+  res.send("Router With Controller Working");
 };
 
-exports.product_create = function(req, res) {
+// create details
+exports.product_create = (req, res, next) => {
   let product = new Product({
     name: req.body.name,
     price: req.body.price
   });
-
-  product.save(function(err) {
+  product.save(err => {
     if (err) {
       return next(err);
     }
-    res.send("Product Created successfully");
+    res.send("Data Created Successfully");
+  });
+};
+// get details
+exports.product_details = (req, res, next) => {
+  Product.find((err, product) => {
+    if (err) return next(err);
+    res.send(product);
   });
 };
 
-exports.product_details_update = function(req, res) {
+// delete details
+exports.product_delete = (req, res, next) => {
+  Product.findByIdAndRemove(req.params.id, function(err) {
+    if (err) return next(err);
+    res.send("delete successfully");
+  });
+};
+exports.product_get_editDetails = (req, res, next) => {
   Product.findById(req.params.id, function(err, product) {
     if (err) return next(err);
     res.send(product);
   });
 };
 
-exports.product_details = function(req, res) {
-  Product.find(function(err, product) {
+exports.product_editDetails_update = (req, res, next) => {
+  Product.findByIdAndUpdate(req.params.id, { $set: req.body }, function(err) {
     if (err) return next(err);
-    res.send(product);
-  });
-};
-exports.product_update = function(req, res) {
-  Product.findByIdAndUpdate(req.params.id, { $set: req.body }, function(
-    err,
-    product
-  ) {
-    if (err) return next(err);
-    res.send("Product udpated.");
-  });
-};
-exports.product_delete = function(req, res) {
-  Product.findByIdAndRemove(req.params.id, function(err) {
-    if (err) return next(err);
-    res.send("Deleted successfully!");
+    res.send("data successfully edited");
   });
 };

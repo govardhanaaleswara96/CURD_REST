@@ -50,7 +50,7 @@
             <a class="nav-link" href="index.html"> Products</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="create.html">Add Products</a>
+            <a class="nav-link" href="addProduct.html">Add Products</a>
           </li>
         </ul>
       </div>
@@ -91,41 +91,41 @@
     <script>
       "use strict";
       $(document).ready(function() {
-        var url = location.search;
-        var urlId = new URLSearchParams(url);
-        var id = urlId.get("id");
-        const form = $("#editProduct");
-        const editUserForm = document.forms["editProduct"];
-        function getEditData() {
-          var arr = $.ajax({
-            url: `/products/${id}`,
+        const url = location.search;
+        const urlId = new URLSearchParams(url);
+        const id = urlId.get("id");
+        const updateForm = $("#editProduct");
+        let getEditDetails = () => {
+          let arr = $.ajax({
+            url: `products/${id}`,
             type: "GET",
+            dataType: "json",
             async: false,
             success: data => {
-              //   console.log(data);
+              //console.log(data);
             }
           }).responseText;
-          var json = JSON.parse(arr);
+          // console.log(arr);
+          const json = JSON.parse(arr);
           console.log(json);
-
-          editUserForm.elements["name"].value = json.name;
-          editUserForm.elements["price"].value = json.price;
-        }
-        getEditData();
-        form.on("submit", submitHandler);
-        function submitHandler(e) {
-          console.log(id);
+          const editForm = document.forms["editProduct"];
+          editForm.elements["name"].value = json.name;
+          editForm.elements["price"].value = json.price;
+        };
+        getEditDetails();
+        let submitHandler = e => {
           e.preventDefault();
           $.ajax({
-            url: `/products/${id}/update`,
+            url: `products/${id}`,
             type: "PUT",
-            data: form.serialize()
-          }).done(response => {
-            // console.log(response);
+            data: updateForm.serialize(),
+            success: res => {
+              console.log(res);
+            }
           });
-          alert("Data Updated Successfully !");
           window.location = "index.html";
-        }
+        };
+        updateForm.on("submit", submitHandler);
       });
     </script>
     <!-- JQuery -->

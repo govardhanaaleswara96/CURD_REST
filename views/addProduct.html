@@ -50,7 +50,7 @@
             <a class="nav-link" href="index.html"> Products</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="create.html">Add Products</a>
+            <a class="nav-link" href="addProduct.html">Add Products</a>
           </li>
         </ul>
       </div>
@@ -96,14 +96,13 @@
         function submitHandler(e) {
           e.preventDefault();
           $.ajax({
-            url: "/products/create",
+            url: "/products/",
             type: "POST",
             data: form.serialize()
-          }).done(response => {
-            // console.log(response);
+          }).done(res => {
+            console.log(res);
           });
-          alert("Data Insert Successfully !");
-          //   document.getElementById("addUserForm").reset();
+          alert("Data Created Successfully");
           window.location = "index.html";
         }
       });
